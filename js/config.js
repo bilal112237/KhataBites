@@ -7,7 +7,7 @@
 
 window.KhataConfig = {
   STORAGE_KEY: 'khatabites_clean_prod_v2',
-  HARDCODED_SUPABASE_URL: '',
-  HARDCODED_SUPABASE_ANON_KEY: '',
+  HARDCODED_SUPABASE_URL: 'https://vmekdshnhktqlqizqhsg.supabase.co/rest/v1/',
+  HARDCODED_SUPABASE_ANON_KEY: 'sb_publishable_8zdwyOiwZwlFeXKoxgMVKQ_Jf0iZ3f7',
   CLOUD_ROOM_KEY: 'uni_hostel_main_squad'
 };
