@@ -17,7 +17,6 @@
         loggedInUserId: 'f1',
         activeTab: 'owes',
         activePage: 'dashboard',
-        isAdminUnlocked: false,
         friends: [
           { id: 'f1', name: 'Admin (You)', room: 'Hostel Room 1', walletApp: 'SadaPay', walletNum: '0300-0000000', color: '#C2410C' }
         ],
@@ -35,6 +34,7 @@
           if (raw) {
             const parsed = JSON.parse(raw);
             if (parsed && Array.isArray(parsed.friends) && Array.isArray(parsed.meals)) {
+              delete parsed.isAdminUnlocked;
               return parsed;
             }
           }
@@ -44,7 +44,17 @@
         return JSON.parse(JSON.stringify(DEFAULT_STATE));
       }
 
+      // Session-only Admin flags (NEVER saved in state, localStorage, or Supabase!)
+      let isAdminSessionUnlocked = false;
+      let isSecretAdminGateVisible = false;
+      let failedAdminAttempts = 0;
+      let adminLockoutUntil = 0;
+
       function saveState() {
+        // Ensure admin flags never leak into saved state or Supabase payload
+        if (state && typeof state === 'object') {
+          delete state.isAdminUnlocked;
+        }
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         } catch (err) {
@@ -118,6 +128,7 @@
           .then(({ data, error }) => {
             if (!error && data && data.payload && Array.isArray(data.payload.friends)) {
               state = data.payload;
+              delete state.isAdminUnlocked;
               if (typeof syncActiveGroupToState === 'function') syncActiveGroupToState();
               syncMealFormSquadControls(false);
               renderAll();
@@ -388,15 +399,15 @@
         if (net > 1) {
           pNet.textContent = '+' + formatMoney(net);
           pNet.className = 'mt-2 font-mono-num font-bold text-xl sm:text-2xl text-emerald-600';
-          pHint.textContent = `You receive ${formatMoney(net)} net`;
+          pHint.textContent = `Friends owe you ${formatMoney(net)}`;
         } else if (net < -1) {
           pNet.textContent = formatMoney(net);
           pNet.className = 'mt-2 font-mono-num font-bold text-xl sm:text-2xl text-rose-600';
-          pHint.textContent = `You owe ${formatMoney(Math.abs(net))} net`;
+          pHint.textContent = `You owe ${formatMoney(Math.abs(net))}`;
         } else {
-          pNet.textContent = 'Settled Up';
+          pNet.textContent = 'All Clear (Rs. 0)';
           pNet.className = 'mt-2 font-mono-num font-bold text-xl sm:text-2xl text-muted';
-          pHint.textContent = 'Zero pending balance';
+          pHint.textContent = 'You do not owe anyone right now';
         }
 
         // Render Squad Ribbon Cards (Only show pairwise relationship with logged-in user; mask third-party balances!)
@@ -500,7 +511,7 @@
         if (draftSoloItems.length === 0) {
           container.innerHTML = `
             <div class="text-xs text-muted italic bg-white/70 rounded-lg px-3 py-2 border border-dashed border-zinc-300">
-              No solo items added - entire bill will be divided equally among selected eaters.
+              No personal items added. The full bill will be divided equally.
             </div>
           `;
           return;
@@ -516,7 +527,7 @@
                 </select>
               </div>
               <div class="col-span-5">
-                <input type="text" data-solo-field="item" data-idx="${idx}" value="${escapeHtml(row.item || '')}" placeholder="Solo item (e.g. Zinger)" class="w-full px-2 py-1.5 rounded-lg border border-zinc-300 text-xs text-ink" />
+                <input type="text" data-solo-field="item" data-idx="${idx}" value="${escapeHtml(row.item || '')}" placeholder="Item name (e.g. Zinger, Drink)" class="w-full px-2 py-1.5 rounded-lg border border-zinc-300 text-xs text-ink" />
               </div>
               <div class="col-span-2">
                 <input type="number" min="0" step="1" data-solo-field="amount" data-idx="${idx}" value="${row.amount || ''}" placeholder="Rs." class="w-full px-2 py-1.5 rounded-lg border border-zinc-300 font-mono-num font-bold text-xs text-ink" />
@@ -660,7 +671,7 @@
         const debtsListEl = document.getElementById('activeDebtsList');
         const privacyFooter = hiddenThirdPartyCount > 0
           ? `<div class="pt-2 flex items-center justify-between text-[11px] text-subtle border-t border-zinc-100">
-               <span>${hiddenThirdPartyCount} other transfer(s) between other friends are hidden for privacy.</span>
+               <span>${hiddenThirdPartyCount} other friend balance(s) are kept private.</span>
                <span class="font-mono-num">Viewing as ${escapeHtml(me.name)}</span>
              </div>`
           : '';
@@ -668,7 +679,7 @@
         if (filteredTransfers.length === 0) {
           debtsListEl.innerHTML = `
             <div class="rounded-xl bg-canvas border border-[#E5E0D8] p-5 text-center space-y-1">
-              <div class="text-sm font-display font-semibold text-ink">You are 100% settled up, ${escapeHtml(me.name)}!</div>
+              <div class="text-sm font-display font-semibold text-ink">All clear, ${escapeHtml(me.name)}!</div>
               <p class="text-xs text-muted">You don't owe anyone and no one owes you right now.</p>
             </div>
             ${privacyFooter}
@@ -762,7 +773,7 @@
         if (filteredMeals.length === 0) {
           mealsContainer.innerHTML = `
             <div class="bg-surface rounded-xl p-8 border border-[#E5E0D8] text-center text-xs text-muted">
-              No meal bills involving your account yet. Use "Split a Meal Bill" to log a meal!
+              No meal bills involving your account yet. Use "Add a Food Bill" to log a meal!
             </div>
           `;
         } else {
@@ -1041,7 +1052,7 @@
           updateLiveSplitPreview();
         });
 
-        // Focus Meal Form button -> switches to Page 2 (Split a Meal Bill)
+        // Focus Meal Form button -> switches to Page 2 (Add a Food Bill)
         document.getElementById('btnFocusMealForm').addEventListener('click', () => {
           if (typeof switchToPage === 'function') switchToPage('split');
           const titleEl = document.getElementById('mealTitle');
@@ -1112,7 +1123,7 @@
           });
         }
 
-        // Add Solo Item Row
+        // Add Personal Item Row
         document.getElementById('btnAddSoloItem').addEventListener('click', () => {
           const defaultFriend = state.friends[0] ? state.friends[0].id : 'f1';
           draftSoloItems.push({ friendId: defaultFriend, item: '', amount: '' });
@@ -1356,7 +1367,7 @@
           showToast(`Recorded ${formatMoney(amount)} payment from ${getFriend(fromId).name} to ${getFriend(toId).name}!`);
         });
 
-        // Add Hostel Friend Modal
+        // Add a New Friend Modal
         document.getElementById('btnOpenAddFriendModal').addEventListener('click', () => {
           document.getElementById('friendNameInput').value = '';
           document.getElementById('friendRoomInput').value = '';
@@ -1488,7 +1499,8 @@
       }
 
       function renderAdminPrivilegeState() {
-        const isAdmin = Boolean(state.isAdminUnlocked);
+        const isAdmin = Boolean(isAdminSessionUnlocked);
+        const gateCard = document.getElementById('adminGateCard');
         const adminPanel = document.getElementById('adminProtectedPanel');
         const cloudPill = document.getElementById('btnCloudStatusPill');
         const passInput = document.getElementById('adminPasscodeInput');
@@ -1496,6 +1508,7 @@
         const lockBtn = document.getElementById('btnLockAdmin');
         const badge = document.getElementById('adminStatusBadge');
 
+        if (gateCard) gateCard.classList.toggle('hidden', !(isSecretAdminGateVisible || isAdmin));
         if (adminPanel) adminPanel.classList.toggle('hidden', !isAdmin);
         if (cloudPill) {
           cloudPill.classList.toggle('hidden', !isAdmin);
@@ -1505,7 +1518,7 @@
         if (unlockBtn) unlockBtn.classList.toggle('hidden', isAdmin);
         if (lockBtn) lockBtn.classList.toggle('hidden', !isAdmin);
         if (badge) {
-          badge.textContent = isAdmin ? 'Admin Mode Unlocked' : 'Standard Student Mode';
+          badge.textContent = isAdmin ? 'Admin Session Active' : 'Restricted Owner Console';
           badge.className = isAdmin
             ? 'text-[11px] font-bold uppercase tracking-wider text-emerald-700'
             : 'text-[11px] font-bold uppercase tracking-wider text-subtle';
@@ -1666,30 +1679,116 @@
           showToast(`Created dining group "${name}" (Code: ${code})!`);
         });
 
-        // Admin Privileges Unlock / Lock Controls
-        const adminForm = document.getElementById('adminUnlockForm');
-        if (adminForm) {
-          adminForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const code = (document.getElementById('adminPasscodeInput').value || '').trim();
-            if (code === 'admin123' || code === '1234' || code.toLowerCase() === 'admin') {
-              state.isAdminUnlocked = true;
-              document.getElementById('adminPasscodeInput').value = '';
-              saveState();
+        // SHA-256 Cryptographic Hash Function (Zero plain-text password stored in code!)
+        const DEFAULT_ADMIN_HASH = '91a9728aeea5ce218f7694fa4d0811660bdac1c023f015794532201b0e5d0151';
+        async function sha256Hex(message) {
+          const msgBuffer = new TextEncoder().encode(message);
+          const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+          const hashArray = Array.from(new Uint8Array(hashBuffer));
+          return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function getExpectedAdminHash() {
+          if (state.customAdminPasswordHash && String(state.customAdminPasswordHash).length === 64) {
+            return String(state.customAdminPasswordHash);
+          }
+          try {
+            const localHash = localStorage.getItem('khatabites_admin_hash');
+            if (localHash && localHash.length === 64) return localHash;
+          } catch (e) {}
+          return externalCfg.ADMIN_PASSWORD_SHA256 || DEFAULT_ADMIN_HASH;
+        }
+
+        // Secret 5-Tap Trigger on KB Logo (or Ctrl+Shift+A) to reveal Admin Login Gate
+        let logoTapCount = 0;
+        let logoTapTimer = null;
+        const logoTrigger = document.getElementById('brandLogoSecretTrigger');
+        if (logoTrigger) {
+          logoTrigger.addEventListener('click', () => {
+            logoTapCount++;
+            if (logoTapTimer) clearTimeout(logoTapTimer);
+            logoTapTimer = setTimeout(() => { logoTapCount = 0; }, 1800);
+            if (logoTapCount >= 5) {
+              logoTapCount = 0;
+              isSecretAdminGateVisible = true;
+              switchToPage('setup');
               renderAdminPrivilegeState();
-              showToast('Admin privileges unlocked. Deployment and Supabase settings are now visible.');
-            } else {
-              showToast('Invalid Admin Passcode. Default admin code is admin123.');
+              const inp = document.getElementById('adminPasscodeInput');
+              if (inp) inp.focus();
             }
           });
         }
+        document.addEventListener('keydown', (e) => {
+          if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+            e.preventDefault();
+            isSecretAdminGateVisible = true;
+            switchToPage('setup');
+            renderAdminPrivilegeState();
+            const inp = document.getElementById('adminPasscodeInput');
+            if (inp) inp.focus();
+          }
+        });
+
+        const adminForm = document.getElementById('adminUnlockForm');
+        if (adminForm) {
+          adminForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (Date.now() < adminLockoutUntil) {
+              const waitSec = Math.ceil((adminLockoutUntil - Date.now()) / 1000);
+              showToast(`Too many failed attempts. Locked for ${waitSec}s.`);
+              return;
+            }
+            const code = (document.getElementById('adminPasscodeInput').value || '').trim();
+            if (!code) return;
+            const inputHash = await sha256Hex(code);
+            if (inputHash === getExpectedAdminHash()) {
+              failedAdminAttempts = 0;
+              isAdminSessionUnlocked = true;
+              document.getElementById('adminPasscodeInput').value = '';
+              renderAdminPrivilegeState();
+              showToast('Admin session unlocked (this device only).');
+            } else {
+              failedAdminAttempts++;
+              document.getElementById('adminPasscodeInput').value = '';
+              if (failedAdminAttempts >= 3) {
+                adminLockoutUntil = Date.now() + 300000; // 5-minute lockout
+                showToast('3 failed attempts. Admin login locked for 5 minutes.');
+              } else {
+                showToast(`Access denied (${3 - failedAdminAttempts} attempts left).`);
+              }
+            }
+          });
+        }
+
+        const btnSaveAdminPw = document.getElementById('btnSaveAdminPassword');
+        if (btnSaveAdminPw) {
+          btnSaveAdminPw.addEventListener('click', async () => {
+            if (!isAdminSessionUnlocked) return;
+            const newPw = (document.getElementById('newAdminPasswordInput').value || '').trim();
+            if (newPw.length < 8) {
+              showToast('Password must be at least 8 characters long.');
+              return;
+            }
+            const newHash = await sha256Hex(newPw);
+            state.customAdminPasswordHash = newHash;
+            delete state.customAdminPassword;
+            try {
+              localStorage.setItem('khatabites_admin_hash', newHash);
+              localStorage.removeItem('khatabites_admin_pw');
+            } catch (e) {}
+            document.getElementById('newAdminPasswordInput').value = '';
+            saveState();
+            showToast('New Admin password hashed (SHA-256) and saved!');
+          });
+        }
+
         const btnLockAdmin = document.getElementById('btnLockAdmin');
         if (btnLockAdmin) {
           btnLockAdmin.addEventListener('click', () => {
-            state.isAdminUnlocked = false;
-            saveState();
+            isAdminSessionUnlocked = false;
+            isSecretAdminGateVisible = false;
             renderAdminPrivilegeState();
-            showToast('Exited Admin Mode. App is now in Standard Student Mode.');
+            showToast('Admin console locked and hidden.');
           });
         }
 
@@ -1697,12 +1796,11 @@
         const btnResetClean = document.getElementById('btnResetCleanSlate');
         if (btnResetClean) {
           btnResetClean.addEventListener('click', () => {
-            if (!state.isAdminUnlocked) return;
+            if (!isAdminSessionUnlocked) return;
             state = JSON.parse(JSON.stringify(DEFAULT_STATE));
             state.groups = JSON.parse(JSON.stringify(MULTI_GROUPS_Presets));
             state.activeGroupId = state.groups[0].id;
-            state.isAdminUnlocked = true;
-            draftSoloItems = [];
+                        draftSoloItems = [];
             try {
               localStorage.removeItem('khatabites_uni_hostel_state_v1');
               localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -1754,7 +1852,7 @@
 
         // Deploy & Code Modal + Cloud DB Controls (Restricted to Admin)
         document.getElementById('btnOpenDeployGuide').addEventListener('click', () => {
-          if (!state.isAdminUnlocked) {
+          if (!isAdminSessionUnlocked) {
             showToast('Admin privileges required to access deployment settings.');
             return;
           }
@@ -1820,12 +1918,12 @@
           if (pages[k]) pages[k].classList.toggle('hidden', k !== pageName);
         });
 
-        // Update top nav buttons
+        // Update top nav buttons (Clean Underline Navbar)
         document.querySelectorAll('.page-nav-btn').forEach(btn => {
           const isAct = btn.getAttribute('data-nav-page') === pageName;
           btn.className = isAct
-            ? 'page-nav-btn py-2.5 px-2 rounded-xl text-xs font-bold transition bg-terracotta-600 text-white shadow-sm text-center truncate'
-            : 'page-nav-btn py-2.5 px-2 rounded-xl text-xs font-bold transition text-muted hover:text-ink hover:bg-white/60 text-center truncate';
+            ? 'page-nav-btn h-full px-3.5 flex items-center gap-1.5 text-xs font-bold border-b-2 transition border-terracotta-600 text-terracotta-600'
+            : 'page-nav-btn h-full px-3.5 flex items-center gap-1.5 text-xs font-semibold border-b-2 border-transparent text-muted hover:text-ink transition';
         });
 
         // Update mobile bottom nav buttons

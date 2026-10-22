@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KhataBites - Uni &amp; Hostel Squad Meal Splitter</title>
+  <title>KhataBites - Easy Friend Bill Splitter</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.7/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -14,59 +14,64 @@
 </head>
 <body class="min-h-screen flex flex-col pb-20 sm:pb-8 selection:bg-orange-100 selection:text-orange-900">
 
-  <!-- Spacious, Uncongested Top Header & Pill Tab Navigation -->
-  <header class="sticky top-0 z-30 bg-[#FAF8F5]/95 backdrop-blur-md border-b border-[#E5E0D8]">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-3.5 space-y-3">
-      <!-- Top Row: Brand, Active Group Context & Quick Actions -->
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-terracotta-600 text-white flex items-center justify-center shadow-sm font-display font-extrabold text-lg tracking-tight">
+  <!-- Clean, Modern Single-Row Top Navigation Bar -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#E5E0D8]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6">
+      <div class="flex items-center justify-between h-16 gap-4">
+        <!-- Left: Brand Logo & Active Group -->
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-9 h-9 rounded-xl bg-terracotta-600 text-white flex items-center justify-center shadow-xs font-display font-extrabold text-sm tracking-tight shrink-0">
             KB
           </div>
-          <div>
+          <div class="min-w-0">
             <div class="flex items-center gap-2">
-              <h1 class="font-display font-extrabold text-lg sm:text-xl tracking-tight text-ink">KhataBites</h1>
-              <button id="btnCloudStatusPill" type="button" class="hidden items-center items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
-                <span id="cloudStatusText">Connect Cloud DB</span>
+              <h1 class="font-display font-extrabold text-base sm:text-lg tracking-tight text-ink truncate">KhataBites</h1>
+              <button id="btnCloudStatusPill" type="button" class="hidden items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition shrink-0">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                <span id="cloudStatusText">Cloud DB</span>
               </button>
             </div>
-            <p class="text-xs text-muted mt-0.5" id="headerContextSubtitle">Active Group: Hostel Block A Dinner Squad</p>
+            <p class="text-[11px] text-muted truncate" id="headerContextSubtitle">Main Uni &amp; Hostel Squad</p>
           </div>
         </div>
 
-        <!-- Right Quick Actions -->
-        <div class="flex items-center gap-2">
-          <button id="btnWhatsAppShare" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-white hover:bg-oat text-ink border border-[#E5E0D8] transition shadow-xs">
-            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
-            <span>WhatsApp Khata</span>
+        <!-- Center: Clean Desktop Underline Tabs (No Cluttered Numbered Boxes) -->
+        <nav aria-label="Main Page Navigation" class="hidden sm:flex items-center gap-1 h-full">
+          <button type="button" data-nav-page="dashboard" class="page-nav-btn h-full px-3.5 flex items-center gap-1.5 text-xs font-bold border-b-2 transition border-terracotta-600 text-terracotta-600">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span>Home</span>
+          </button>
+          <button type="button" data-nav-page="split" class="page-nav-btn h-full px-3.5 flex items-center gap-1.5 text-xs font-semibold border-b-2 border-transparent text-muted hover:text-ink transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            <span>Add Bill</span>
+          </button>
+          <button type="button" data-nav-page="history" class="page-nav-btn h-full px-3.5 flex items-center gap-1.5 text-xs font-semibold border-b-2 border-transparent text-muted hover:text-ink transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            <span>History</span>
+          </button>
+          <button type="button" data-nav-page="groups" class="page-nav-btn h-full px-3.5 flex items-center gap-1.5 text-xs font-semibold border-b-2 border-transparent text-muted hover:text-ink transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span>Friends</span>
+          </button>
+          <button type="button" data-nav-page="setup" class="page-nav-btn h-full px-3.5 flex items-center gap-1.5 text-xs font-semibold border-b-2 border-transparent text-muted hover:text-ink transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            <span>My Account</span>
+          </button>
+        </nav>
+
+        <!-- Right: Quick Actions -->
+        <div class="flex items-center gap-2 shrink-0">
+          <button id="btnWhatsAppShare" type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-oat/70 hover:bg-oat text-ink transition" title="Copy your personal balance summary for WhatsApp">
+            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+            <span class="hidden md:inline">Share My Khata</span>
           </button>
 
-          <button id="btnFocusMealForm" type="button" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-terracotta-600 hover:bg-terracotta-700 text-white transition shadow-sm">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-            <span>New Meal Bill</span>
+          <button id="btnFocusMealForm" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-terracotta-600 hover:bg-terracotta-700 text-white transition shadow-xs">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            <span>Add Bill</span>
           </button>
         </div>
       </div>
-
-      <!-- Segmented Pill Navigation Bar (Spacious, Full-Width on Desktop) -->
-      <nav aria-label="Main Page Navigation" class="grid grid-cols-5 gap-1.5 bg-oat/90 p-1.5 rounded-2xl border border-[#E5E0D8]">
-        <button type="button" data-nav-page="dashboard" class="page-nav-btn py-2.5 px-2 rounded-xl text-xs font-bold transition bg-terracotta-600 text-white shadow-sm text-center truncate">
-          1. Home &amp; Balances
-        </button>
-        <button type="button" data-nav-page="split" class="page-nav-btn py-2.5 px-2 rounded-xl text-xs font-bold transition text-muted hover:text-ink hover:bg-white/60 text-center truncate">
-          2. Split a Meal Bill
-        </button>
-        <button type="button" data-nav-page="history" class="page-nav-btn py-2.5 px-2 rounded-xl text-xs font-bold transition text-muted hover:text-ink hover:bg-white/60 text-center truncate">
-          3. Meals &amp; Screenshots
-        </button>
-        <button type="button" data-nav-page="groups" class="page-nav-btn py-2.5 px-2 rounded-xl text-xs font-bold transition text-muted hover:text-ink hover:bg-white/60 text-center truncate">
-          4. Groups &amp; Squad
-        </button>
-        <button type="button" data-nav-page="setup" class="page-nav-btn py-2.5 px-2 rounded-xl text-xs font-bold transition text-muted hover:text-ink hover:bg-white/60 text-center truncate">
-          5. My Account
-        </button>
-      </nav>
     </div>
   </header>
 
@@ -74,80 +79,104 @@
   <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-8">
 
     <!-- ================================================================== -->
-    <!-- PAGE 1: HOME & BALANCES (Default Landing Page)                     -->
+    <!-- PAGE 1: OVERVIEW & BALANCES (Beginner-Friendly Home Screen)        -->
     <!-- ================================================================== -->
     <div id="pageViewDashboard" class="space-y-6">
-      <!-- Minimal Privacy & Quick Action Bar -->
-      <div class="bg-surface rounded-xl px-4 py-3.5 border border-[#E5E0D8] flex flex-wrap items-center justify-between gap-3">
-        <div class="flex flex-wrap items-center gap-2.5">
-          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-zinc-900 text-white">
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-            <span>Private Khata</span>
-          </span>
-          <p class="text-xs text-muted">
-            Only balances between <strong class="text-ink" id="privacyActiveUserLabel">you</strong> and your friends are visible. Third-party debts are hidden.
-          </p>
+
+      <!-- Beginner-Friendly 3-Step Getting Started Guide (Auto-updates as you add friends & meals) -->
+      <div id="onboardingGuideCard" class="bg-surface rounded-2xl p-5 border border-[#E5E0D8] shadow-xs space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-terracotta-600">Easy 3-Step Guide</span>
+            <h2 class="font-display font-bold text-base text-ink mt-0.5">How to Use This App</h2>
+          </div>
+          <span class="text-[11px] font-medium px-2.5 py-1 rounded-full bg-oat text-muted">Only You See Your Balance</span>
         </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <button type="button" data-goto-page="split" class="px-3.5 py-2 rounded-lg text-xs font-semibold bg-ink hover:bg-zinc-800 text-white transition">
-            Go to Split a Meal Bill
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <button type="button" data-goto-page="setup" class="text-left p-3.5 rounded-xl bg-canvas hover:bg-oat/60 border border-[#E5E0D8] transition flex flex-col justify-between gap-2">
+            <div>
+              <div class="text-xs font-bold text-ink">Step 1: Add Your Name</div>
+              <p class="text-[11px] text-muted mt-1">Add your name and your SadaPay or JazzCash number.</p>
+            </div>
+            <span class="text-[11px] font-bold text-terracotta-600">Go to My Account</span>
           </button>
-          <button type="button" data-goto-page="groups" class="px-3 py-2 rounded-lg text-xs font-medium bg-oat hover:bg-zinc-200/70 text-ink transition">
-            Switch Group / Copy Wallets
+
+          <button type="button" data-goto-page="groups" class="text-left p-3.5 rounded-xl bg-canvas hover:bg-oat/60 border border-[#E5E0D8] transition flex flex-col justify-between gap-2">
+            <div>
+              <div class="text-xs font-bold text-ink">Step 2: Add Your Friends</div>
+              <p class="text-[11px] text-muted mt-1">Add the friends who eat with you every day.</p>
+            </div>
+            <span class="text-[11px] font-bold text-emerald-700">Go to Friends</span>
+          </button>
+
+          <button type="button" data-goto-page="split" class="text-left p-3.5 rounded-xl bg-canvas hover:bg-oat/60 border border-[#E5E0D8] transition flex flex-col justify-between gap-2">
+            <div>
+              <div class="text-xs font-bold text-ink">Step 3: Add a Food Bill</div>
+              <p class="text-[11px] text-muted mt-1">Write who paid the bill and who ate. We divide the money for you.</p>
+            </div>
+            <span class="text-[11px] font-bold text-ink">Add a Food Bill</span>
           </button>
         </div>
       </div>
 
-      <!-- 4 Clean KPI Cards -->
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div class="bg-surface rounded-2xl p-4 border border-[#E5E0D8] shadow-sm">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold uppercase tracking-wider text-subtle">Total Squad Dining</span>
-            <span class="text-[11px] font-medium px-2 py-0.5 rounded-md bg-oat text-muted" id="kpiMealsCount">0 meals</span>
+      <!-- Clean Hero Standing Card (Replaces Confusing Technical KPI Grid) -->
+      <div class="bg-surface rounded-2xl p-6 border border-[#E5E0D8] shadow-xs">
+        <div class="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-[#F3EFEA]">
+          <div id="kpiPerspectiveCard">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-subtle" id="kpiPerspectiveTitle">Your Balance</span>
+              <span class="text-[11px] font-medium px-2 py-0.5 rounded-md bg-oat text-ink" id="kpiPerspectiveRoom">Hostel</span>
+            </div>
+            <div class="mt-1.5 font-mono-num font-extrabold text-2xl sm:text-3xl text-ink" id="kpiPerspectiveNet">All Clear (Rs. 0)</div>
+            <p class="mt-1 text-xs text-muted" id="kpiPerspectiveHint">Showing private account for <strong class="text-ink" id="privacyActiveUserLabel">you</strong></p>
           </div>
-          <div class="mt-2 font-mono-num font-bold text-xl sm:text-2xl text-ink" id="kpiTotalSpent">Rs. 0</div>
-          <p class="mt-1 text-xs text-muted" id="kpiSoloSubtext">Includes Rs. 0 in solo orders</p>
+
+          <div class="flex flex-wrap items-center gap-2.5">
+            <button type="button" data-goto-page="split" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-terracotta-600 hover:bg-terracotta-700 text-white transition shadow-xs">
+              Add a Food Bill
+            </button>
+            <button type="button" id="btnOpenCustomSettle" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-oat hover:bg-zinc-200/70 text-ink transition">
+              I Paid Someone
+            </button>
+            <button type="button" data-goto-page="groups" class="px-3.5 py-2.5 rounded-xl text-xs font-medium bg-canvas border border-[#E5E0D8] hover:bg-oat text-ink transition">
+              Friends & Numbers
+            </button>
+          </div>
         </div>
 
-        <div class="bg-surface rounded-2xl p-4 border border-[#E5E0D8] shadow-sm">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold uppercase tracking-wider text-subtle">Unsettled Khata</span>
-            <span class="text-[11px] font-medium px-2 py-0.5 rounded-md bg-oat text-terracotta-600" id="kpiActiveDebtsCount">0 transfers</span>
+        <!-- 3 Simple, Understandable Summary Stats Below -->
+        <div class="grid grid-cols-3 gap-4 pt-4">
+          <div>
+            <div class="text-[11px] font-medium text-subtle">Food You Ate</div>
+            <div class="mt-0.5 font-mono-num font-bold text-base sm:text-lg text-ink" id="kpiTotalSpent">Rs. 0</div>
+            <div class="text-[11px] text-muted"><span id="kpiMealsCount">0 meals</span> | <span id="kpiSoloSubtext">Solo: Rs. 0</span></div>
           </div>
-          <div class="mt-2 font-mono-num font-bold text-xl sm:text-2xl text-terracotta-600" id="kpiUnsettledPool">Rs. 0</div>
-          <p class="mt-1 text-xs text-muted">Simplified minimum transfers</p>
-        </div>
 
-        <div class="bg-surface rounded-2xl p-4 border border-[#E5E0D8] shadow-sm">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold uppercase tracking-wider text-subtle">Settled &amp; Verified</span>
-            <span class="text-[11px] font-medium px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700" id="kpiSettlementsCount">0 records</span>
+          <div>
+            <div class="text-[11px] font-medium text-subtle">Unpaid Money</div>
+            <div class="mt-0.5 font-mono-num font-bold text-base sm:text-lg text-terracotta-600" id="kpiUnsettledPool">Rs. 0</div>
+            <div class="text-[11px] text-muted" id="kpiActiveDebtsCount">0 active</div>
           </div>
-          <div class="mt-2 font-mono-num font-bold text-xl sm:text-2xl text-emerald-600" id="kpiTotalSettled">Rs. 0</div>
-          <p class="mt-1 text-xs text-muted" id="kpiProofBreakdown">0 screenshots | 0 told in person</p>
-        </div>
 
-        <div class="bg-surface rounded-2xl p-4 border border-[#E5E0D8] shadow-sm" id="kpiPerspectiveCard">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold uppercase tracking-wider text-subtle" id="kpiPerspectiveTitle">Your Standing</span>
-            <span class="text-[11px] font-medium px-2 py-0.5 rounded-md bg-oat text-ink" id="kpiPerspectiveRoom">All Squad</span>
+          <div>
+            <div class="text-[11px] font-medium text-subtle">Already Paid Back</div>
+            <div class="mt-0.5 font-mono-num font-bold text-base sm:text-lg text-emerald-600" id="kpiTotalSettled">Rs. 0</div>
+            <div class="text-[11px] text-muted"><span id="kpiSettlementsCount">0 yours</span> (<span id="kpiProofBreakdown">0 proofs</span>)</div>
           </div>
-          <div class="mt-2 font-mono-num font-bold text-xl sm:text-2xl text-ink" id="kpiPerspectiveNet">Balanced</div>
-          <p class="mt-1 text-xs text-muted" id="kpiPerspectiveHint">Filter by friend in Page 5</p>
         </div>
       </div>
 
-      <!-- Instant Payback Plan (Who Needs to Pay Whom Right Now) -->
-      <div id="tabPanelOwes" class="space-y-5">
-        <div class="bg-surface rounded-2xl p-5 border border-[#E5E0D8] shadow-sm space-y-4">
+      <!-- Your Private Balances List (Who You Owe & Who Owes You) -->
+      <div id="tabPanelOwes" class="space-y-4">
+        <div class="bg-surface rounded-2xl p-5 border border-[#E5E0D8] shadow-xs space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <span class="text-[11px] font-semibold uppercase tracking-wider text-subtle">Personal Balances Only</span>
-              <h3 class="font-display font-bold text-base text-ink">Your Private Settlements</h3>
-              <p class="text-xs text-muted">Shows only what you owe or what friends owe you. What other members owe each other is private.</p>
+              <h3 class="font-display font-bold text-base text-ink">Who Needs to Pay Whom (Your Account)</h3>
+              <p class="text-xs text-muted">You only see money you need to pay or get back. Other friends cannot see this.</p>
             </div>
-            <button type="button" id="btnOpenCustomSettle" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-oat hover:bg-zinc-200/70 text-ink transition">
-              Record Custom Payment
+            <button type="button" data-goto-page="history" class="text-xs font-semibold text-terracotta-600 hover:underline">
+              See Past Food Bills
             </button>
           </div>
 
@@ -156,32 +185,27 @@
           </div>
         </div>
 
-        <!-- Collapsible Account Summary Drawer (Keeps Home Screen Uncongested!) -->
+        <!-- Optional Collapsible Account Summary Drawer -->
         <details class="group bg-surface rounded-2xl border border-[#E5E0D8] shadow-xs overflow-hidden">
-          <summary class="cursor-pointer list-none p-5 flex items-center justify-between gap-3 hover:bg-oat/40 transition select-none">
+          <summary class="cursor-pointer list-none px-5 py-4 flex items-center justify-between gap-3 hover:bg-oat/40 transition select-none">
             <div>
-              <h3 class="font-display font-bold text-sm sm:text-base text-ink">View Detailed Account Breakdown (Paid vs. Eaten)</h3>
-              <p class="text-xs text-muted">Tap to expand your full numbers | Other members' balances remain private</p>
+              <h3 class="font-display font-bold text-sm text-ink">See Total Paid vs. Total Eaten</h3>
+              <p class="text-xs text-muted">Click here to see how much you paid at the counter vs. how much food you ate</p>
             </div>
-            <span class="px-3 py-1.5 rounded-xl bg-oat text-xs font-bold text-ink group-open:bg-terracotta-600 group-open:text-white transition">
-              Toggle Table
+            <span class="px-3 py-1 rounded-lg bg-oat text-xs font-semibold text-ink group-open:bg-terracotta-600 group-open:text-white transition">
+              Show Table
             </span>
           </summary>
-          <div class="px-5 pb-5 pt-2 border-t border-[#E5E0D8] space-y-3">
-            <div class="flex justify-end">
-              <button type="button" data-goto-page="history" class="text-xs font-semibold text-terracotta-600 hover:underline">
-                View Detailed Meal Receipts
-              </button>
-            </div>
+          <div class="px-5 pb-5 pt-2 border-t border-[#E5E0D8]">
             <div class="overflow-x-auto">
               <table class="w-full text-left border-collapse">
                 <thead>
                   <tr class="border-b border-[#E5E0D8] text-[11px] font-bold uppercase tracking-wider text-subtle">
                     <th class="py-2.5 pr-3">Friend</th>
                     <th class="py-2.5 px-3 text-right">Bills Paid</th>
-                    <th class="py-2.5 px-3 text-right">Shared + Solo Eaten</th>
-                    <th class="py-2.5 px-3 text-right">Sent / Received</th>
-                    <th class="py-2.5 pl-3 text-right">Net Standing</th>
+                    <th class="py-2.5 px-3 text-right">Food Eaten</th>
+                    <th class="py-2.5 px-3 text-right">Paid Back</th>
+                    <th class="py-2.5 pl-3 text-right">Final Balance</th>
                   </tr>
                 </thead>
                 <tbody id="accountAuditTableBody" class="divide-y divide-zinc-100 text-xs">
@@ -201,11 +225,11 @@
       <!-- Minimal Top Bar for Adding a Meal -->
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-terracotta-600">Add New Squad Meal</span>
-          <h2 class="font-display font-extrabold text-xl text-ink">Split a Meal Bill in 3 Easy Taps</h2>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-terracotta-600">Divide a Food Bill</span>
+          <h2 class="font-display font-extrabold text-xl text-ink">Add a Food Bill in 3 Easy Taps</h2>
         </div>
         <button id="btnLoadSamplePreset" type="button" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-terracotta-50 hover:bg-terracotta-100 text-terracotta-700 border border-terracotta-100 transition">
-          Fill Sample Dhaba Order
+          Try Sample Bill
         </button>
       </div>
 
@@ -215,9 +239,9 @@
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-terracotta-600">
               <span class="w-6 h-6 rounded-full bg-terracotta-600 text-white flex items-center justify-center text-xs">1</span>
-              <span>How Much Was the Bill &amp; Where?</span>
+              <span>Where Did You Eat &amp; How Much Was the Bill?</span>
             </span>
-            <span class="text-xs text-muted">Tap a quick spot or type below</span>
+            <span class="text-xs text-muted">Click a food place below or type the name</span>
           </div>
 
           <!-- 1-Tap Quick Spot Chips -->
@@ -239,12 +263,12 @@
           <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-end">
             <!-- Big Total Bill Input -->
             <div class="sm:col-span-5">
-              <label for="mealTotalBill" class="block text-xs font-bold text-ink mb-1.5">Total Counter Bill (<span class="currency-label">Rs.</span>)</label>
+              <label for="mealTotalBill" class="block text-xs font-bold text-ink mb-1.5">Total Bill Paid (<span class="currency-label">Rs.</span>)</label>
               <input id="mealTotalBill" type="number" min="1" step="1" required placeholder="0" class="w-full px-4 py-3 rounded-2xl border-2 border-[#E5E0D8] bg-canvas font-mono-num font-extrabold text-xl text-ink focus:outline-none focus:border-terracotta-600 focus:bg-white transition" />
             </div>
 
             <div class="sm:col-span-4">
-              <label for="mealTitle" class="block text-xs font-bold text-ink mb-1.5">Spot / Dhaba Name</label>
+              <label for="mealTitle" class="block text-xs font-bold text-ink mb-1.5">Food Place Name</label>
               <input id="mealTitle" type="text" required placeholder="e.g., Quetta Cafe, Savour..." class="w-full px-4 py-3 rounded-2xl border border-[#E5E0D8] bg-canvas text-sm font-medium text-ink focus:outline-none focus:border-terracotta-600 focus:bg-white transition" />
             </div>
 
@@ -263,7 +287,7 @@
           <!-- Who Paid the Bill? (1-Tap Payer Pills + Hidden/Synced Select) -->
           <div class="pt-3 border-t border-[#F3EFEA] space-y-2.5">
             <div class="flex items-center justify-between">
-              <label for="mealPayer" class="text-xs font-bold text-ink">Who Paid at the Counter?</label>
+              <label for="mealPayer" class="text-xs font-bold text-ink">Who Paid the Bill?</label>
               <select id="mealPayer" class="px-3 py-1 rounded-xl border border-[#E5E0D8] bg-oat text-xs font-bold text-ink focus:outline-none"></select>
             </div>
             <div id="payerQuickPills" class="flex flex-wrap gap-2"></div>
@@ -278,14 +302,14 @@
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <span class="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-emerald-700">
                   <span class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs">2</span>
-                  <span>Tap Who Ate (<span id="selectedEatersCount">0</span> Eating)</span>
+                  <span>Who Ate This Meal? (<span id="selectedEatersCount">0</span> Friends)</span>
                 </span>
                 <div class="flex items-center gap-2">
-                  <button type="button" id="btnSelectAllEaters" class="px-2.5 py-1 rounded-lg bg-emerald-50 text-xs font-bold text-emerald-700 hover:bg-emerald-100 transition">All Present</button>
-                  <button type="button" id="btnClearEaters" class="px-2.5 py-1 rounded-lg bg-oat text-xs font-semibold text-muted hover:text-ink transition">Reset</button>
+                  <button type="button" id="btnSelectAllEaters" class="px-2.5 py-1 rounded-lg bg-emerald-50 text-xs font-bold text-emerald-700 hover:bg-emerald-100 transition">Select Everyone</button>
+                  <button type="button" id="btnClearEaters" class="px-2.5 py-1 rounded-lg bg-oat text-xs font-semibold text-muted hover:text-ink transition">Unselect All</button>
                 </div>
               </div>
-              <p class="text-xs text-muted">Tap a friend to check/uncheck them. Unchecked friends pay Rs. 0.</p>
+              <p class="text-xs text-muted">Click on the friends who ate. Unchecked friends will not be charged.</p>
               <div id="eatersCheckboxGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5"></div>
             </div>
 
@@ -295,12 +319,12 @@
                 <div>
                   <span class="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-terracotta-600">
                     <span class="w-6 h-6 rounded-full bg-terracotta-100 text-terracotta-700 flex items-center justify-center text-xs">3</span>
-                    <span>Any Personal / Solo Orders? (Optional)</span>
+                    <span>Did Anyone Order Something Just for Himself? (Optional)</span>
                   </span>
-                  <p class="text-xs text-muted mt-1">Ordered a separate drink or Zinger just for himself? Add it here so only he pays for it.</p>
+                  <p class="text-xs text-muted mt-1">If one friend ordered a separate item just for himself, add it here so only he pays for it.</p>
                 </div>
                 <button type="button" id="btnAddSoloItem" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-terracotta-50 hover:bg-terracotta-100 text-terracotta-700 border border-terracotta-100 transition">
-                  <span>Add Solo Item</span>
+                  <span>Add Personal Item</span>
                 </button>
               </div>
               <div id="soloItemsContainer" class="space-y-2.5"></div>
@@ -312,8 +336,8 @@
             <div class="rounded-3xl bg-[#18181B] text-white p-6 space-y-4 shadow-lg">
               <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
                 <div>
-                  <span class="text-[11px] font-bold uppercase tracking-wider text-amber-400">Live Split Receipt</span>
-                  <h3 class="text-xs text-zinc-400 mt-0.5">(Total - Solo) / Eaters</h3>
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-amber-400">Bill Calculation</span>
+                  <h3 class="text-xs text-zinc-400 mt-0.5">(Total Bill - Personal Items) / Eaters</h3>
                 </div>
                 <span id="liveFormulaBadge" class="text-xs font-mono-num px-2.5 py-1 rounded-full bg-zinc-800 text-emerald-400 font-semibold">Ready</span>
               </div>
@@ -324,17 +348,17 @@
                   <div id="previewTotalBill" class="font-mono-num font-bold text-sm text-white mt-0.5">Rs. 0</div>
                 </div>
                 <div>
-                  <div class="text-[10px] uppercase tracking-wider text-amber-400">- Solo</div>
+                  <div class="text-[10px] uppercase tracking-wider text-amber-400">- Personal</div>
                   <div id="previewSoloTotal" class="font-mono-num font-bold text-sm text-amber-300 mt-0.5">Rs. 0</div>
                 </div>
                 <div>
-                  <div class="text-[10px] uppercase tracking-wider text-emerald-400">= Shared</div>
+                  <div class="text-[10px] uppercase tracking-wider text-emerald-400">= Shared Food</div>
                   <div id="previewSharedPool" class="font-mono-num font-bold text-sm text-emerald-400 mt-0.5">Rs. 0</div>
                 </div>
               </div>
 
               <div class="flex items-center justify-between text-xs text-zinc-300 px-1">
-                <span>Equal Shared Base:</span>
+                <span>Each Person Pays (Shared):</span>
                 <span id="previewBasePerEater" class="font-mono-num font-bold text-white text-sm">Rs. 0 / person</span>
               </div>
 
@@ -344,7 +368,7 @@
 
               <button type="submit" id="btnSubmitMeal" class="w-full py-4 px-5 rounded-2xl bg-terracotta-600 hover:bg-terracotta-500 text-white font-display font-extrabold text-sm shadow-md transition flex items-center justify-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                <span>Save Meal &amp; Update Squad Khata</span>
+                <span>Save Food Bill</span>
               </button>
             </div>
           </div>
@@ -359,18 +383,18 @@
       <!-- Clear Direction Banner -->
       <div class="bg-surface rounded-2xl p-4 sm:p-5 border border-[#E5E0D8] shadow-sm flex flex-wrap items-center justify-between gap-3">
         <div>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-terracotta-600">Page 3 of 5 | Full Audit Log</span>
-          <h2 class="font-display font-bold text-base sm:text-lg text-ink">Meals History &amp; Payment Screenshots</h2>
-          <p class="text-xs text-muted">Switch between past meal bills and recorded payment screenshots / verbal hostel confirmations below.</p>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-terracotta-600">Past Bills &amp; Payments</span>
+          <h2 class="font-display font-bold text-base sm:text-lg text-ink">Food Bills &amp; Money Paid Back</h2>
+          <p class="text-xs text-muted">Check old food bills or see screenshots of money paid back.</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
           <div class="flex items-center gap-1.5 bg-oat p-1 rounded-xl" role="tablist">
             <button type="button" data-tab="meals" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-white text-ink shadow-sm">
-              Meals History (<span id="badgeMealsCount">0</span>)
+              Food Bills (<span id="badgeMealsCount">0</span>)
             </button>
             <button type="button" data-tab="settlements" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition text-muted hover:text-ink">
-              Screenshots &amp; Told Log (<span id="badgeSettlementsCount">0</span>)
+              Money Paid Back (<span id="badgeSettlementsCount">0</span>)
             </button>
             <button type="button" data-tab="owes" class="tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition text-muted hover:text-ink">
               Who Owes Who (<span id="badgeOwesCount">0</span>)
@@ -393,11 +417,11 @@
       <div id="tabPanelSettlements" class="hidden space-y-3.5">
         <div class="bg-surface rounded-2xl p-4 border border-[#E5E0D8] flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h3 class="font-display font-bold text-sm text-ink">Online Transfers, Screenshots &amp; Verbal Confirmations</h3>
-            <p class="text-xs text-muted">Click any screenshot proof to inspect the full receipt or verify an in-person hostel payment.</p>
+            <h3 class="font-display font-bold text-sm text-ink">Money Paid Back (Screenshots &amp; Cash)</h3>
+            <p class="text-xs text-muted">Click on any payment below to see the screenshot or note.</p>
           </div>
           <button type="button" id="btnOpenSettleFromTab" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-terracotta-600 hover:bg-terracotta-700 text-white transition">
-            Log Payment / Screenshot
+            I Paid Someone Back
           </button>
         </div>
         <div id="settlementsFeedContainer" class="space-y-3"></div>
@@ -410,20 +434,20 @@
     <div id="pageViewGroups" class="hidden space-y-6">
       <!-- Clear Direction Banner -->
       <div class="bg-surface rounded-2xl p-4 sm:p-5 border border-[#E5E0D8] shadow-sm space-y-1">
-        <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Page 4 of 5 | Circles &amp; Wallets</span>
-        <h2 class="font-display font-bold text-base sm:text-lg text-ink">Switch Daily Dining Groups &amp; Copy Friend Wallet Numbers</h2>
-        <p class="text-xs text-muted">Step 1: Select which group you are eating with right now. Step 2: Add friends to the hostel roster or copy their SadaPay / JazzCash number in one click.</p>
+        <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Groups &amp; Friends List</span>
+        <h2 class="font-display font-bold text-base sm:text-lg text-ink">Your Eating Groups &amp; Friends</h2>
+        <p class="text-xs text-muted">Switch between different friend groups or copy a friend's SadaPay / JazzCash number.</p>
       </div>
 
       <!-- Dining Groups Section -->
       <div class="bg-surface rounded-2xl p-5 border border-[#E5E0D8] shadow-sm space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h3 class="font-display font-bold text-base text-ink">Your Dining Groups Today (Switch Group Khata)</h3>
+            <h3 class="font-display font-bold text-base text-ink">Your Eating Groups</h3>
             <p class="text-xs text-muted" id="activeGroupCodeDisplay">Invite Code: <strong class="font-mono-num text-ink">HSTL-A1</strong></p>
           </div>
           <button type="button" id="btnOpenGroupModal" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-ink hover:bg-zinc-800 text-white transition">
-            <span>Create / Join Dining Group</span>
+            <span>Make a New Group</span>
           </button>
         </div>
         <div id="groupsSwitchBar" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
@@ -433,12 +457,12 @@
       <div class="bg-surface rounded-2xl p-5 border border-[#E5E0D8] shadow-sm space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
-            <h3 class="font-display font-bold text-base text-ink">Hostel Squad Accounts &amp; Net Balances</h3>
+            <h3 class="font-display font-bold text-base text-ink">Friends in Your Group</h3>
             <p class="text-xs text-muted">Click <strong>Copy</strong> on any friend's card to copy their SadaPay, NayaPay, JazzCash, or Easypaisa number.</p>
           </div>
           <button id="btnOpenAddFriendModal" type="button" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-oat hover:bg-zinc-200/70 text-ink transition">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
-            <span>Add Hostel Friend</span>
+            <span>Add a New Friend</span>
           </button>
         </div>
         <div id="friendsRibbon" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
@@ -451,9 +475,9 @@
     <div id="pageViewSetup" class="hidden space-y-6">
       <!-- Clean Student Profile Header -->
       <div class="bg-surface rounded-2xl p-4 sm:p-5 border border-[#E5E0D8] shadow-xs space-y-1">
-        <span class="text-[11px] font-bold uppercase tracking-wider text-terracotta-600">Student Profile &amp; Preferences</span>
-        <h2 class="font-display font-bold text-base sm:text-lg text-ink">My KhataBites Account</h2>
-        <p class="text-xs text-muted">Manage your personal student profile, mobile wallet number, and display currency.</p>
+        <span class="text-[11px] font-bold uppercase tracking-wider text-terracotta-600">My Account Settings</span>
+        <h2 class="font-display font-bold text-base sm:text-lg text-ink">Your Profile &amp; Settings</h2>
+        <p class="text-xs text-muted">Change your name, add your SadaPay/JazzCash number, or switch accounts.</p>
       </div>
 
       <!-- Personal Account Card -->
@@ -464,7 +488,7 @@
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <span class="text-[11px] font-bold uppercase tracking-wider text-terracotta-600">Logged-In Student Account</span>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-terracotta-600">Your Active Account</span>
               <span class="px-2 py-0.5 rounded-md bg-oat text-[11px] font-mono-num font-semibold text-ink" id="loggedInHandleBadge">SadaPay | 0304-5819201</span>
             </div>
             <h3 class="font-display font-bold text-base text-ink mt-0.5" id="loggedInUserName">Bilal (Hostel A-102)</h3>
@@ -472,19 +496,19 @@
           </div>
         </div>
         <button type="button" id="btnOpenAccountModal" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-terracotta-600 hover:bg-terracotta-700 text-white transition shadow-xs">
-          Switch / Create My Account
+          Change or Make My Account
         </button>
       </div>
 
       <!-- Perspective & Currency Controls Card -->
       <div class="bg-surface rounded-2xl p-5 border border-[#E5E0D8] shadow-xs grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label for="perspectiveSelect" class="block text-xs font-bold uppercase tracking-wider text-subtle mb-1.5">Active Private Account View</label>
+          <label for="perspectiveSelect" class="block text-xs font-bold uppercase tracking-wider text-subtle mb-1.5">Who Are You Logged In As?</label>
           <select id="perspectiveSelect" class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 bg-canvas text-sm font-semibold text-ink focus:outline-none"></select>
-          <p class="text-[11px] text-muted mt-1">Strict Privacy: You can only view balances, debts, and screenshots involving your own active account.</p>
+          <p class="text-[11px] text-muted mt-1">Privacy is ON: You can only see your own money and bills.</p>
         </div>
         <div>
-          <label for="currencySelect" class="block text-xs font-bold uppercase tracking-wider text-subtle mb-1.5">Display Currency</label>
+          <label for="currencySelect" class="block text-xs font-bold uppercase tracking-wider text-subtle mb-1.5">Money Currency</label>
           <select id="currencySelect" class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 bg-canvas text-sm font-mono-num font-semibold text-ink focus:outline-none">
             <option value="Rs.">Rs. (PKR)</option>
             <option value="$">$ (USD)</option>
@@ -499,13 +523,13 @@
       <div class="bg-surface rounded-2xl p-5 border border-[#E5E0D8] shadow-xs space-y-4">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <span class="text-[11px] font-bold uppercase tracking-wider text-subtle" id="adminStatusBadge">Standard Student Mode</span>
-            <h3 class="font-display font-bold text-sm text-ink">App Administrator Privileges</h3>
-            <p class="text-xs text-muted">Database configuration and Vercel deployment settings are restricted to the app administrator.</p>
+            <span class="text-[11px] font-bold uppercase tracking-wider text-subtle" id="adminStatusBadge">Normal User Mode</span>
+            <h3 class="font-display font-bold text-sm text-ink">Admin Settings (For App Owner Only)</h3>
+            <p class="text-xs text-muted">Only the app owner can open this section to connect the database.</p>
           </div>
 
           <form id="adminUnlockForm" class="flex flex-wrap items-center gap-2">
-            <input id="adminPasscodeInput" type="password" placeholder="Admin Passcode (admin123)" class="px-3 py-2 rounded-xl border border-zinc-300 bg-canvas text-xs font-mono-num text-ink focus:outline-none focus:border-terracotta-600" />
+            <input id="adminPasscodeInput" type="password" placeholder="Enter Admin Password" class="px-3 py-2 rounded-xl border border-zinc-300 bg-canvas text-xs font-mono-num text-ink focus:outline-none focus:border-terracotta-600" />
             <button type="submit" id="btnUnlockAdmin" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-ink hover:bg-zinc-800 text-white transition">
               Unlock Admin
             </button>
@@ -520,7 +544,7 @@
           <div class="flex flex-wrap items-center justify-between gap-3">
             <div class="space-y-0.5">
               <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Admin Only | Supabase &amp; Database Management</span>
-              <h4 class="font-display font-bold text-base text-ink">Connect Supabase Cloud &amp; Manage Squad Data</h4>
+              <h4 class="font-display font-bold text-base text-ink">Connect Supabase Cloud &amp; Go to Friends Data</h4>
               <p class="text-xs text-muted">Paste your Supabase credentials below or open the full setup guide. You can also wipe any test/dummy data anytime.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
@@ -530,6 +554,20 @@
               <button id="btnOpenDeployGuide" type="button" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
                 <span>Code &amp; Vercel Deploy</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Change Admin Password Card (Admin Only) -->
+          <div class="p-4 rounded-xl bg-canvas border border-[#E5E0D8] flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div class="text-xs font-bold text-ink">Change Admin Password</div>
+              <p class="text-[11px] text-muted">Set a strong custom password so no one else can unlock this panel.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <input id="newAdminPasswordInput" type="password" placeholder="New strong password (min 6 chars)" class="px-3 py-1.5 rounded-xl border border-zinc-300 bg-white text-xs font-mono-num text-ink focus:outline-none focus:border-terracotta-600" />
+              <button type="button" id="btnSaveAdminPassword" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-ink hover:bg-zinc-800 text-white transition">
+                Update Password
               </button>
             </div>
           </div>
@@ -548,8 +586,8 @@
                 <input id="adminInlineSbUrl" type="url" placeholder="https://your-project.supabase.co" class="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white font-mono-num text-xs text-ink" />
               </div>
               <div>
-                <label for="adminInlineSbKey" class="block text-[11px] font-bold text-muted mb-1">Supabase Anon Public Key (eyJ...)</label>
-                <input id="adminInlineSbKey" type="text" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI..." class="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white font-mono-num text-xs text-ink" />
+                <label for="adminInlineSbKey" class="block text-[11px] font-bold text-muted mb-1">Publishable Key (sb_publishable_...) or Anon Key</label>
+                <input id="adminInlineSbKey" type="text" placeholder="sb_publishable_... or eyJhbGci..." class="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white font-mono-num text-xs text-ink" />
               </div>
             </div>
             <div class="flex flex-wrap items-center justify-between gap-2">
@@ -566,12 +604,12 @@
   </main>
 
   <!-- Mobile Sticky Bottom Navigation Bar -->
-  <nav aria-label="Mobile Bottom Navigation" class="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-surface/95 backdrop-blur-md border-t border-[#E5E0D8] grid grid-cols-5 py-1.5 px-1 text-center">
-    <button type="button" data-nav-page="dashboard" class="page-nav-mobile py-1 text-[10px] font-bold text-terracotta-600">1. Home</button>
-    <button type="button" data-nav-page="split" class="page-nav-mobile py-1 text-[10px] font-semibold text-muted">2. Split Bill</button>
-    <button type="button" data-nav-page="history" class="page-nav-mobile py-1 text-[10px] font-semibold text-muted">3. History</button>
-    <button type="button" data-nav-page="groups" class="page-nav-mobile py-1 text-[10px] font-semibold text-muted">4. Groups</button>
-    <button type="button" data-nav-page="setup" class="page-nav-mobile py-1 text-[10px] font-semibold text-muted">5. Account</button>
+  <nav aria-label="Mobile Bottom Navigation" class="sm:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-[#E5E0D8] grid grid-cols-5 py-2 px-1 text-center">
+    <button type="button" data-nav-page="dashboard" class="page-nav-mobile py-1 text-[11px] font-bold text-terracotta-600">Home</button>
+    <button type="button" data-nav-page="split" class="page-nav-mobile py-1 text-[11px] font-semibold text-muted">Add Bill</button>
+    <button type="button" data-nav-page="history" class="page-nav-mobile py-1 text-[11px] font-semibold text-muted">History</button>
+    <button type="button" data-nav-page="groups" class="page-nav-mobile py-1 text-[11px] font-semibold text-muted">Friends</button>
+    <button type="button" data-nav-page="setup" class="page-nav-mobile py-1 text-[11px] font-semibold text-muted">My Account</button>
   </nav>
 
   <!-- MODAL 1: SETTLE UP (Online Payment Screenshot OR "Just Told Them") -->
@@ -579,8 +617,8 @@
     <div class="bg-surface rounded-2xl max-w-lg w-full border border-[#E5E0D8] shadow-xl overflow-hidden my-8">
       <div class="bg-oat px-5 py-4 border-b border-[#E5E0D8] flex items-center justify-between">
         <div>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Clear Your Khata</span>
-          <h3 id="settleModalTitle" class="font-display font-bold text-lg text-ink">Record Payment or Verbal Settlement</h3>
+          <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Pay Back Money</span>
+          <h3 id="settleModalTitle" class="font-display font-bold text-lg text-ink">I Paid Someone or Verbal Settlement</h3>
         </div>
         <button type="button" id="btnCloseSettleModal" class="w-8 h-8 rounded-lg bg-white border border-zinc-300 flex items-center justify-center text-muted hover:text-ink">Close</button>
       </div>
@@ -588,11 +626,11 @@
       <form id="settleForm" class="p-5 space-y-4">
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label for="settleFrom" class="block text-xs font-semibold text-ink mb-1">Who Paid Back (Sender)</label>
+            <label for="settleFrom" class="block text-xs font-semibold text-ink mb-1">Who Sent the Money?</label>
             <select id="settleFrom" class="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white text-sm font-semibold text-ink"></select>
           </div>
           <div>
-            <label for="settleTo" class="block text-xs font-semibold text-ink mb-1">Paid To (Receiver)</label>
+            <label for="settleTo" class="block text-xs font-semibold text-ink mb-1">Who Got the Money?</label>
             <select id="settleTo" class="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white text-sm font-semibold text-ink"></select>
           </div>
         </div>
@@ -614,14 +652,14 @@
             <input id="settleAmount" type="number" min="1" step="1" required class="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white font-mono-num font-bold text-sm text-ink" />
           </div>
           <div>
-            <label for="settleMethod" class="block text-xs font-semibold text-ink mb-1">How Was It Settled?</label>
+            <label for="settleMethod" class="block text-xs font-semibold text-ink mb-1">How Did You Pay?</label>
             <select id="settleMethod" class="w-full px-3 py-2 rounded-xl border border-zinc-300 bg-white text-sm font-semibold text-ink">
               <option value="SadaPay Screenshot">SadaPay + Screenshot</option>
               <option value="NayaPay Screenshot">NayaPay + Screenshot</option>
               <option value="JazzCash Screenshot">JazzCash + Screenshot</option>
               <option value="Easypaisa Screenshot">Easypaisa + Screenshot</option>
               <option value="Raast / Bank Transfer">Raast / Bank Transfer</option>
-              <option value="Just Told Them (In Person)">Just Told Them (Hostel / Uni)</option>
+              <option value="Just Told Them (In Person)">Told Them in Person (Hostel / Uni)</option>
               <option value="Cash Handed in Hostel">Cash Handed in Hostel</option>
             </select>
           </div>
@@ -649,7 +687,7 @@
         <div class="flex items-center justify-end gap-2 pt-2">
           <button type="button" id="btnCancelSettleModal" class="px-4 py-2 rounded-xl text-xs font-semibold bg-oat text-ink hover:bg-zinc-200/70">Cancel</button>
           <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm">
-            Confirm &amp; Update Balance
+            Save Payment
           </button>
         </div>
       </form>
@@ -719,7 +757,7 @@
       <div class="bg-oat px-5 py-4 border-b border-[#E5E0D8] flex items-center justify-between">
         <div>
           <span class="text-[11px] font-bold uppercase tracking-wider text-terracotta-600">Individual Student Profile</span>
-          <h3 id="accountModalTitle" class="font-display font-bold text-lg text-ink">My KhataBites Account</h3>
+          <h3 id="accountModalTitle" class="font-display font-bold text-lg text-ink">Your Profile &amp; Settings</h3>
         </div>
         <button type="button" id="btnCloseAccountModal" class="w-8 h-8 rounded-lg bg-white border border-zinc-300 flex items-center justify-center text-muted hover:text-ink">Close</button>
       </div>
@@ -849,7 +887,7 @@
             </div>
             <div>
               <label for="supabaseKeyInput" class="block text-[11px] font-bold text-ink mb-1">Supabase Anon Public Key</label>
-              <input id="supabaseKeyInput" type="text" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI..." class="w-full px-2.5 py-1.5 rounded-lg border border-zinc-300 bg-white font-mono-num text-xs text-ink" />
+              <input id="supabaseKeyInput" type="text" placeholder="sb_publishable_... or eyJhbGci..." class="w-full px-2.5 py-1.5 rounded-lg border border-zinc-300 bg-white font-mono-num text-xs text-ink" />
             </div>
           </div>
           <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
